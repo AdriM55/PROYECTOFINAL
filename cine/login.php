@@ -34,6 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
+<header>
+        <div class="nav">
+            <a href="index.php">Inicio</a>
+             <!-- Enlace para acceder a las reservas -->
+            <div class="user-actions">
+                <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
+                    <a href="mis_reservas.php">Mis Reservas</a>
+                    <a href="logout.php" class="button">Cerrar Sesión</a>
+                <?php else: ?>
+                    <a href="login.php" class="button">Iniciar Sesión</a>
+                    <a href="registro.php" class="button">Registrarse</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </header>
     <h2>Iniciar Sesión</h2>
     <?php if (isset($error)): ?>
         <p style="color: red;"><?php echo $error; ?></p>

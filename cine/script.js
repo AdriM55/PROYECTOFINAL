@@ -4,7 +4,7 @@ function reservar() {
                                        .map(asiento => asiento.dataset.asiento);
     const pelicula = document.getElementById('titulo-pelicula').textContent;
 
-    fetch("reservar.php", {
+    fetch("reservas.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ horario_id: horario, asientos: asientosSeleccionados })

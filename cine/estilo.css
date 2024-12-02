@@ -73,18 +73,25 @@ h1 {
     padding: 10px;
 }
 
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre botones */
+}
+
 .nav a, .nav span {
     color: white;
     text-decoration: none;
-    margin-right: 15px;
 }
 
 .nav a.button {
-    background-color: #007bff;
+    background-color: #28a745; /* Color verde */
     padding: 5px 10px;
     border-radius: 5px;
+    color: white;
+    text-decoration: none;
 }
 
 .nav a.button:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }

@@ -26,27 +26,103 @@ $horarios = $stmt_horarios->get_result();
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<header>
+        <div class="nav">
+            <a href="index.php">Inicio</a>
+             <!-- Enlace para acceder a las reservas -->
+            <div class="user-actions">
+                <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
+                    <a href="mis_reservas.php">Mis Reservas</a>
+                    <a href="logout.php" class="button">Cerrar Sesión</a>
+                <?php else: ?>
+                    <a href="login.php" class="button">Iniciar Sesión</a>
+                    <a href="register.php" class="button">Registrarse</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </header>   
     <meta charset="UTF-8">
     <title><?php echo htmlspecialchars($pelicula['titulo']); ?></title>
     <link rel="stylesheet" href="estilo.css">
-    <script src="script.js" defer></script>
+    <script>
+    function seleccionarAsiento(asiento) {
+        // Evitar selección si el asiento está ocupado
+        if (asiento.classList.contains('ocupado')) return;
+
+        asiento.classList.toggle('seleccionado');
+        const inputAsientos = document.getElementById('asientosSeleccionados');
+        const seleccionados = Array.from(document.querySelectorAll('.asiento.seleccionado'))
+                                   .map(a => a.dataset.asiento);
+        inputAsientos.value = seleccionados.join(',');
+    }
+</script>
+
+    <style>
+        .asientos-container {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .asiento {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            background-color: #ddd;
+            border: 1px solid #aaa;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+        }
+        .asiento.ocupado {
+            background-color: #ff6b6b;
+            cursor: not-allowed;
+        }
+        .asiento.seleccionado {
+            background-color: #76b852;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <h1>Reservar para <?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
-    <div>
-        <h3>Selecciona la hora:</h3>
-        <select id="horario">
+    <form action="reservas.php" method="POST">
+        <input type="hidden" name="pelicula_id" value="<?php echo $pelicula_id; ?>">
+        <label for="horario">Selecciona la hora:</label>
+        <select name="horario_id" id="horario">
             <?php while ($horario = $horarios->fetch_assoc()): ?>
                 <option value="<?php echo $horario['id']; ?>">
                     <?php echo date("H:i", strtotime($horario['horario'])); ?>
                 </option>
             <?php endwhile; ?>
         </select>
-    </div>
-    <div class="asientos">
-        <h3>Selecciona tu asiento:</h3>
-        <div id="grid-asientos"></div>
-    </div>
-    <button onclick="reservar()">Reservar Ticket</button>
+
+        <div class="asientos-container">
+            <h3>Selecciona tus asientos:</h3>
+            <input type="hidden" name="asientos" id="asientosSeleccionados">
+            <?php
+            // Generar asientos 5x5
+            $ocupadosQuery = "SELECT asiento FROM reservas WHERE horario_id = ?";
+            $stmt_ocupados = $conexion->prepare($ocupadosQuery);
+            $stmt_ocupados->bind_param("i", $pelicula_id);
+            $stmt_ocupados->execute();
+            $ocupadosResult = $stmt_ocupados->get_result();
+            $ocupados = [];
+            while ($row = $ocupadosResult->fetch_assoc()) {
+                $ocupados[] = $row['asiento'];
+            }
+
+            for ($i = 1; $i <= 5; $i++) {
+                for ($j = 1; $j <= 5; $j++) {
+                    $asiento = "$i-$j";
+                    $class = in_array($asiento, $ocupados) ? 'asiento ocupado' : 'asiento';
+                    echo "<div class=\"$class\" data-asiento=\"$asiento\" onclick=\"seleccionarAsiento(this)\">$asiento</div>";
+                }
+                echo '<br>';
+            }
+            ?>
+        </div>
+        <button type="submit">Reservar</button>
+    </form>
 </body>
 </html>
