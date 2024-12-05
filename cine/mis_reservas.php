@@ -2,15 +2,15 @@
 session_start();
 include 'db.php';
 
-// Verificar que el usuario esté logueado
+// Verificar que el usuario haya iniciado sesión
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
-    exit;
+    exit();
 }
 
 $usuario_id = $_SESSION['usuario_id'];
 
-// Obtener todas las reservas del usuario
+// Obtener las reservas del usuario
 $sql_reservas = "SELECT r.id AS reserva_id, r.horario_id, r.asiento, h.horario, p.titulo
                  FROM reservas r
                  JOIN horarios h ON r.horario_id = h.id
@@ -19,47 +19,47 @@ $sql_reservas = "SELECT r.id AS reserva_id, r.horario_id, r.asiento, h.horario, 
 $stmt_reservas = $conexion->prepare($sql_reservas);
 $stmt_reservas->bind_param("i", $usuario_id);
 $stmt_reservas->execute();
-$reservas_result = $stmt_reservas->get_result();
-
+$resultado_reservas = $stmt_reservas->get_result();
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Reservas</title>
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-<header>
+    <header>
         <div class="nav">
             <a href="index.php">Inicio</a>
-             <!-- Enlace para acceder a las reservas -->
-            <div class="user-actions">
+            <div class="acciones-usuario">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
                     <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
                     <a href="mis_reservas.php">Mis Reservas</a>
-                    <a href="logout.php" class="button">Cerrar Sesión</a>
+                    <a href="logout.php" class="boton">Cerrar Sesión</a>
                 <?php else: ?>
-                    <a href="login.php" class="button">Iniciar Sesión</a>
-                    <a href="registro.php" class="button">Registrarse</a>
+                    <a href="login.php" class="boton">Iniciar Sesión</a>
+                    <a href="registro.php" class="boton">Registrarse</a>
                 <?php endif; ?>
             </div>
         </div>
     </header>
+
     <h1>Mis Reservas</h1>
-    <?php if ($reservas_result->num_rows > 0): ?>
+    <?php if ($resultado_reservas->num_rows > 0): ?>
         <table>
             <thead>
                 <tr>
-                    <th>Pelicula</th>
+                    <th>Película</th>
                     <th>Horario</th>
                     <th>Asiento</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($reserva = $reservas_result->fetch_assoc()): ?>
+                <?php while ($reserva = $resultado_reservas->fetch_assoc()): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($reserva['titulo']); ?></td>
                         <td><?php echo date("H:i", strtotime($reserva['horario'])); ?></td>
@@ -67,7 +67,7 @@ $reservas_result = $stmt_reservas->get_result();
                         <td>
                             <form action="cancelar_reserva.php" method="POST">
                                 <input type="hidden" name="reserva_id" value="<?php echo $reserva['reserva_id']; ?>">
-                                <button type="submit" class="cancelar-btn">Cancelar</button>
+                                <button type="submit" class="boton-cancelar">Cancelar</button>
                             </form>
                         </td>
                     </tr>

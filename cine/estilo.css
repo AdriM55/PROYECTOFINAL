@@ -1,97 +1,104 @@
+/* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    background-color: #222;
+    color: #fff;
     margin: 0;
     padding: 0;
     text-align: center;
 }
 
 h1 {
-    color: #333;
+    color: #ffcc00;
+    font-size: 3em;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
+/* Barra de navegación */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #333;
+    padding: 15px 30px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.nav a {
+    color: #ffcc00;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.nav a:hover {
+    background-color: #ffcc00;
+    color: #222;
+}
+
+.nav .acciones-usuario {
+    gap: 20px;
+}
+
+.nav .acciones-usuario a.boton {
+    background-color: #ff6f61;
+    color: white;
+}
+
+.nav .acciones-usuario a.boton:hover {
+    background-color: #f44336;
+    transform: scale(1.05);
+}
+
+/* Cartelera de películas */
 .cartelera {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 20px;
-    margin-top: 20px;
 }
 
 .pelicula {
     width: 200px;
     text-align: center;
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.pelicula:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.6);
 }
 
 .pelicula img {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
+    border-bottom: 3px solid #ffcc00;
 }
 
 .pelicula h2 {
-    font-size: 1.2em;
-    color: #444;
-}
-
-.asientos {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#grid-asientos {
-    display: grid;
-    grid-template-columns: repeat(5, 40px);
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.asiento {
-    width: 40px;
-    height: 40px;
-    background-color: #ddd;
-    border: 1px solid #aaa;
-    cursor: pointer;
-}
-
-.asiento.seleccionado {
-    background-color: #76b852;
-}
-
-.asiento.libre:hover {
-    background-color: #b8e994;
-}
-
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
-    color: white;
+    color: #ffcc00;
     padding: 10px;
 }
 
-.user-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Espacio entre botones */
-}
 
-.nav a, .nav span {
-    color: white;
-    text-decoration: none;
-}
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        align-items: center;
+    }
 
-.nav a.button {
-    background-color: #28a745; /* Color verde */
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-}
+    .cartelera {
+        flex-direction: column;
+        align-items: center;
+    }
 
-.nav a.button:hover {
-    background-color: #218838;
+    .pelicula {
+        width: 90%;
+    }
 }

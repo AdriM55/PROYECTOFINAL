@@ -2,34 +2,81 @@
 session_start();
 include 'db.php';
 
-// Verificar que el usuario esté logueado
+// Verificar sesión
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit;
 }
 
-// Obtener la película y sus horarios
+// Obtener película
 $pelicula_id = $_GET['id'];
-$sql_pelicula = "SELECT * FROM peliculas WHERE id = ?";
-$stmt_pelicula = $conexion->prepare($sql_pelicula);
+$stmt_pelicula = $conexion->prepare("SELECT * FROM peliculas WHERE id = ?");
 $stmt_pelicula->bind_param("i", $pelicula_id);
 $stmt_pelicula->execute();
 $pelicula = $stmt_pelicula->get_result()->fetch_assoc();
 
-$sql_horarios = "SELECT * FROM horarios WHERE pelicula_id = ?";
-$stmt_horarios = $conexion->prepare($sql_horarios);
+// Obtener horarios
+$stmt_horarios = $conexion->prepare("SELECT * FROM horarios WHERE pelicula_id = ?");
 $stmt_horarios->bind_param("i", $pelicula_id);
 $stmt_horarios->execute();
 $horarios = $stmt_horarios->get_result();
+
+// Obtener asientos ocupados
+$ocupados = [];
+if (!empty($_GET['horario_id'])) {
+    $horario_id = $_GET['horario_id'];
+    $stmt_ocupados = $conexion->prepare("SELECT asiento FROM reservas WHERE horario_id = ?");
+    $stmt_ocupados->bind_param("i", $horario_id);
+    $stmt_ocupados->execute();
+    $ocupadosResult = $stmt_ocupados->get_result();
+    while ($row = $ocupadosResult->fetch_assoc()) {
+        $ocupados[] = $row['asiento'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($pelicula['titulo']); ?></title>
+    <link rel="stylesheet" href="estilo.css">
+    <script>
+        function seleccionarAsiento(asiento) {
+            if (asiento.classList.contains('ocupado')) return;
+            asiento.classList.toggle('seleccionado');
+            const seleccionados = Array.from(document.querySelectorAll('.asiento.seleccionado'))
+                .map(a => a.dataset.asiento);
+            document.getElementById('asientosSeleccionados').value = seleccionados.join(',');
+        }
+
+        function cambiarHorario() {
+            const horarioId = document.getElementById('horario').value;
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('horario_id', horarioId);
+            window.location.search = urlParams.toString();
+        }
+    </script>
+    <style>
+        .asiento {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            background-color: #aaa;
+            border: 1px solid #aaa;
+            line-height: 40px;
+            cursor: pointer;
+        }
+        .asiento.ocupado { background-color: #ff6b6b; cursor: not-allowed; }
+        .asiento.seleccionado { background-color: #76b852; color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
         <div class="nav">
             <a href="index.php">Inicio</a>
-             <!-- Enlace para acceder a las reservas -->
             <div class="user-actions">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
                     <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
@@ -41,57 +88,18 @@ $horarios = $stmt_horarios->get_result();
                 <?php endif; ?>
             </div>
         </div>
-    </header>   
-    <meta charset="UTF-8">
-    <title><?php echo htmlspecialchars($pelicula['titulo']); ?></title>
-    <link rel="stylesheet" href="estilo.css">
-    <script>
-    function seleccionarAsiento(asiento) {
-        // Evitar selección si el asiento está ocupado
-        if (asiento.classList.contains('ocupado')) return;
+    </header>
 
-        asiento.classList.toggle('seleccionado');
-        const inputAsientos = document.getElementById('asientosSeleccionados');
-        const seleccionados = Array.from(document.querySelectorAll('.asiento.seleccionado'))
-                                   .map(a => a.dataset.asiento);
-        inputAsientos.value = seleccionados.join(',');
-    }
-</script>
-
-    <style>
-        .asientos-container {
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .asiento {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            margin: 5px;
-            background-color: #ddd;
-            border: 1px solid #aaa;
-            text-align: center;
-            line-height: 40px;
-            cursor: pointer;
-        }
-        .asiento.ocupado {
-            background-color: #ff6b6b;
-            cursor: not-allowed;
-        }
-        .asiento.seleccionado {
-            background-color: #76b852;
-            color: #fff;
-        }
-    </style>
-</head>
-<body>
     <h1>Reservar para <?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
+
     <form action="reservas.php" method="POST">
         <input type="hidden" name="pelicula_id" value="<?php echo $pelicula_id; ?>">
         <label for="horario">Selecciona la hora:</label>
-        <select name="horario_id" id="horario">
+        <select name="horario_id" id="horario" onchange="cambiarHorario()">
+            <option value="">Seleccione un horario</option>
             <?php while ($horario = $horarios->fetch_assoc()): ?>
-                <option value="<?php echo $horario['id']; ?>">
+                <option value="<?php echo $horario['id']; ?>" 
+                        <?php if (!empty($horario_id) && $horario_id == $horario['id']) echo 'selected'; ?>>
                     <?php echo date("H:i", strtotime($horario['horario'])); ?>
                 </option>
             <?php endwhile; ?>
@@ -100,27 +108,18 @@ $horarios = $stmt_horarios->get_result();
         <div class="asientos-container">
             <h3>Selecciona tus asientos:</h3>
             <input type="hidden" name="asientos" id="asientosSeleccionados">
-            <?php
-            // Generar asientos 5x5
-            $ocupadosQuery = "SELECT asiento FROM reservas WHERE horario_id = ?";
-            $stmt_ocupados = $conexion->prepare($ocupadosQuery);
-            $stmt_ocupados->bind_param("i", $pelicula_id);
-            $stmt_ocupados->execute();
-            $ocupadosResult = $stmt_ocupados->get_result();
-            $ocupados = [];
-            while ($row = $ocupadosResult->fetch_assoc()) {
-                $ocupados[] = $row['asiento'];
-            }
-
-            for ($i = 1; $i <= 5; $i++) {
-                for ($j = 1; $j <= 5; $j++) {
-                    $asiento = "$i-$j";
-                    $class = in_array($asiento, $ocupados) ? 'asiento ocupado' : 'asiento';
-                    echo "<div class=\"$class\" data-asiento=\"$asiento\" onclick=\"seleccionarAsiento(this)\">$asiento</div>";
-                }
-                echo '<br>';
-            }
-            ?>
+            <?php for ($i = 0; $i < 5; $i++): ?>
+                <?php for ($j = 0; $j < 5; $j++): ?>
+                    <?php 
+                        $asiento = "$i-$j";
+                        $class = in_array($asiento, $ocupados) ? 'asiento ocupado' : 'asiento';
+                    ?>
+                    <div class="<?php echo $class; ?>" data-asiento="<?php echo $asiento; ?>" onclick="seleccionarAsiento(this)">
+                        <?php echo $asiento; ?>
+                    </div>
+                <?php endfor; ?>
+                <br>
+            <?php endfor; ?>
         </div>
         <button type="submit">Reservar</button>
     </form>
