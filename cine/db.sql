@@ -13,7 +13,6 @@ CREATE TABLE usuarios (
 CREATE TABLE peliculas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
-    imagen VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL
 );
 
