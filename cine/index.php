@@ -40,12 +40,12 @@ $resultado = $conexion->query($sql);
             while ($pelicula = $resultado->fetch_assoc()): 
                 $imagenPath = "img/{$contador}.jpg"; // Ruta de la imagen
             ?>
-                <div class="pelicula">
-                    <a href="pelicula.php?id=<?php echo $pelicula['id']; ?>">
-                        <img src="<?php echo $imagenPath; ?>" alt="<?php echo htmlspecialchars($pelicula['titulo']); ?>">
-                        <h2><?php echo htmlspecialchars($pelicula['titulo']); ?></h2>
-                    </a>
-                </div>
+            <div class="pelicula">
+                <a href="pelicula.php?id=<?php echo $pelicula['id']; ?>">
+                    <img src="<?php echo $imagenPath; ?>" alt="<?php echo htmlspecialchars($pelicula['titulo']); ?>">
+                </a>
+            </div>
+
             <?php 
             $contador++; // Incrementar contador
             endwhile; 

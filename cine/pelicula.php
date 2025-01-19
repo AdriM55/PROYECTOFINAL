@@ -110,7 +110,7 @@ if (!empty($_GET['horario_id'])) {
 
     <div class="sinopsis">
         <h2>Sinopsis:</h2>
-        <p><?php echo nl2br(htmlspecialchars($pelicula['descripcion'])); ?></p>  <!-- Descripción de la película -->
+        <p><?php echo nl2br(htmlspecialchars($pelicula['sinopsis'])); ?></p>  <!-- Sinopsis de la película -->
     </div>
 
     <!-- Formulario de reserva -->
