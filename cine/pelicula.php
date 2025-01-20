@@ -67,23 +67,31 @@ if (!empty($_GET['horario_id'])) {
             window.location.search = urlParams.toString();  // Recargar la página con el nuevo parámetro
         }
     </script>
-    <style>
-        /* Estilos básicos para los asientos */
-        .asiento {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            margin: 5px;
-            background-color: #aaa;
-            border: 1px solid #aaa;
-            line-height: 40px;
-            cursor: pointer;
-        }
-        /* Asientos ocupados tienen un color distinto y no se pueden seleccionar */
-        .asiento.ocupado { background-color: #ff6b6b; cursor: not-allowed; }
-        /* Asientos seleccionados tienen un color diferente */
-        .asiento.seleccionado { background-color: #76b852; color: #fff; }
-    </style>
+<style>
+    /* Estilos básicos para los asientos */
+    .asiento {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        margin: 5px;
+        background-image: url('img/disponible.png'); /* Imagen por defecto */
+        background-size: cover;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    /* Asientos ocupados tienen una imagen distinta y no se pueden seleccionar */
+    .asiento.ocupado {
+        background-image: url('img/ocupado.png');
+        cursor: not-allowed;
+    }
+
+    /* Asientos seleccionados tienen una imagen distinta */
+    .asiento.seleccionado {
+        background-image: url('img/seleccionado.png');
+    }
+</style>
+
 </head>
 <body>
     <!-- Barra de navegación -->
@@ -106,7 +114,7 @@ if (!empty($_GET['horario_id'])) {
     </header>
 
     <!-- Título y sinopsis de la película -->
-    <h1>Reservar para <?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
+    <h1><?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
 
     <div class="sinopsis">
         <h2>Sinopsis:</h2>
@@ -131,6 +139,10 @@ if (!empty($_GET['horario_id'])) {
         <!-- Contenedor de los asientos -->
         <div class="asientos-container">
             <h3>Selecciona tus asientos:</h3>
+
+                <!-- Línea que representa la pantalla -->
+                <div class="pantalla">Pantalla</div>
+
             <input type="hidden" name="asientos" id="asientosSeleccionados">  <!-- Campo oculto para almacenar los asientos seleccionados -->
             <?php for ($i = 0; $i < 5; $i++): ?>
                 <?php for ($j = 0; $j < 5; $j++): ?>
@@ -149,5 +161,10 @@ if (!empty($_GET['horario_id'])) {
         </div>
         <button type="submit">Reservar</button>  <!-- Botón para enviar el formulario de reserva -->
     </form>
+
+    <!-- Trailer -->
+            <h2>Tráiler:</h2>
+            <iframe frameborder="0" width="900" height="500" allowfullscreen="" src="<?php echo htmlspecialchars($pelicula['trailer']); ?>"></iframe>
+
 </body>
 </html>
