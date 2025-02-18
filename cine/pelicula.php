@@ -48,6 +48,7 @@ if (!empty($_GET['horario_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pelicula['titulo']); ?></title>  <!-- Título dinámico con el nombre de la película -->
     <link rel="stylesheet" href="estilo.css">  <!-- Vincula el archivo de estilos CSS -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
     <script>
         // Función para seleccionar un asiento
         function seleccionarAsiento(asiento) {
@@ -74,7 +75,7 @@ if (!empty($_GET['horario_id'])) {
         width: 60px;
         height: 60px;
         margin: 5px;
-        background-image: url('img/disponible.png'); /* Imagen por defecto */
+        background-image: url('asientos/disponible.png'); /* Imagen por defecto */
         background-size: cover;
         cursor: pointer;
         margin-bottom: 20px;
@@ -82,13 +83,13 @@ if (!empty($_GET['horario_id'])) {
 
     /* Asientos ocupados tienen una imagen distinta y no se pueden seleccionar */
     .asiento.ocupado {
-        background-image: url('img/ocupado.png');
+        background-image: url('asientos/ocupado.png');
         cursor: not-allowed;
     }
 
     /* Asientos seleccionados tienen una imagen distinta */
     .asiento.seleccionado {
-        background-image: url('img/seleccionado.png');
+        background-image: url('asientos/seleccionado.png');
     }
 </style>
 

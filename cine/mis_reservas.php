@@ -35,6 +35,7 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Reservas</title>
     <link rel="stylesheet" href="estilo.css">  <!-- Vincula los estilos CSS -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
     <!-- Barra de navegación -->

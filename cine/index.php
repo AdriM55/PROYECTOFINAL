@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 // Obtener todas las películas ordenadas por ID
-$sql = "SELECT id, titulo FROM peliculas ORDER BY id";
+$sql = "SELECT id, titulo, portada FROM peliculas ORDER BY id";
 $resultado = $conexion->query($sql);
 ?>
 
@@ -14,6 +14,7 @@ $resultado = $conexion->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cartelera de Cine</title>
     <link rel="stylesheet" href="estilo.css">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
 <header>
@@ -36,19 +37,15 @@ $resultado = $conexion->query($sql);
     <h1>Cartelera de Cine</h1>
     <div class="cartelera" id="cartelera">
         <?php 
-        $contador = 1;
         while ($pelicula = $resultado->fetch_assoc()): 
-            $imagenPath = "img/{$contador}.jpg"; 
+            $imagenPath = $pelicula['portada'];  // Usamos la ruta de la portada desde la base de datos
         ?>
-        <div class="pelicula" data-index="<?php echo $contador; ?>">
+        <div class="pelicula">
             <a href="pelicula.php?id=<?php echo $pelicula['id']; ?>">
                 <img src="<?php echo $imagenPath; ?>" alt="<?php echo htmlspecialchars($pelicula['titulo']); ?>">
             </a>
         </div>
-        <?php 
-        $contador++;
-        endwhile; 
-        ?>
+        <?php endwhile; ?>
     </div>
     <button id="toggleButton" class="boton-mostrar">Mostrar más</button>
 </main>
