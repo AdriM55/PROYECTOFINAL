@@ -59,5 +59,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <input type="password" name="password" placeholder="Contraseña" required>
     <button type="submit">Iniciar Sesión</button>
 </form>
+
+    <!-- 🔹 PIE DE PÁGINA -->
+    <footer class="piepagina">
+    <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
+    <p>
+        <a href="politica_privacidad.php">Política de Privacidad</a> |
+        <a href="aviso_legal.php">Aviso Legal</a>
+    </p>
+</footer>
+
+<style>
+    .piepagina {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+</style>
+
 </body>
 </html>

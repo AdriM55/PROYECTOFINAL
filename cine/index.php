@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 // Obtener todas las películas ordenadas por ID
-$sql = "SELECT id, titulo, portada FROM peliculas ORDER BY id";
+$sql = "SELECT id, titulo, portada, precio FROM peliculas ORDER BY id";
 $resultado = $conexion->query($sql);
 ?>
 
@@ -17,6 +17,7 @@ $resultado = $conexion->query($sql);
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
+
 <header>
     <div class="nav">
         <a href="index.php">Inicio</a>
@@ -24,6 +25,7 @@ $resultado = $conexion->query($sql);
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
                 <a href="mis_reservas.php">Mis Reservas</a>
+                <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a>
                 <a href="logout.php" class="boton">Cerrar Sesión</a>
             <?php else: ?>
                 <a href="login.php" class="button">Iniciar Sesión</a>
@@ -33,12 +35,36 @@ $resultado = $conexion->query($sql);
     </div>
 </header>
 
+<!-- 🔹 SLIDER DE IMÁGENES (Pegado al menú) -->
+<div class="slider-container">
+    <div class="slider">
+        <?php 
+        $imagenes_slider = [
+            'slider/image.png',
+            'slider/image2.png',
+            'slider/image3.png',
+            'slider/image4.png',
+            'slider/image5.png'
+        ];
+        
+        foreach ($imagenes_slider as $imagen): ?>
+            <div class="slide">
+                <img src="<?php echo $imagen; ?>" alt="Imagen de película">
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <button class="prev" onclick="moverSlide(-1)">&#10094;</button>
+    <button class="next" onclick="moverSlide(1)">&#10095;</button>
+</div>
+
 <main>
-    <h1>Cartelera de Cine</h1>
+    <h1>Cine Kursaal</h1>
+
     <div class="cartelera" id="cartelera">
         <?php 
         while ($pelicula = $resultado->fetch_assoc()): 
-            $imagenPath = $pelicula['portada'];  // Usamos la ruta de la portada desde la base de datos
+            $imagenPath = $pelicula['portada'];  
+            $precio = number_format($pelicula['precio'], 2);
         ?>
         <div class="pelicula">
             <a href="pelicula.php?id=<?php echo $pelicula['id']; ?>">
@@ -50,19 +76,137 @@ $resultado = $conexion->query($sql);
     <button id="toggleButton" class="boton-mostrar">Mostrar más</button>
 </main>
 
+<!-- 🔹 ESTILOS MEJORADOS -->
+<style>
+    /* 🎬 General */
+    body {
+        font-family: 'Jost', Sans-serif;
+        background-color: #222;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    h1 {
+        color: #ffcc00;
+        font-size: 3em;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    /* 🔹 NAVBAR */
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        background-color: #333;
+        padding: 15px 30px;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 🔹 SLIDER (Pegado a la barra de navegación) */
+    .slider-container {
+        width: 100%;
+        max-width: 100%;
+        height: auto; /* Se ajusta automáticamente */
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    .slide img {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* Mantiene el tamaño pero puede recortar */
+    }
+
+    .slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+        min-width: 100%;
+        display: none;
+        text-align: center;
+    }
+
+    .prev, .next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 2rem;
+        border-radius: 5px;
+    }
+
+    .prev { left: 10px; }
+    .next { right: 10px; }
+
+    .prev:hover, .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* 🔹 BOTÓN MOSTRAR MÁS */
+    .boton-mostrar {
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #ffcc00;
+        color: #222;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .boton-mostrar:hover {
+        background-color: #ff9900;
+        transform: scale(1.05);
+    }
+
+
+</style>
+
+<!-- 🔹 PIE DE PÁGINA -->
+<footer class="piepagina">
+    <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
+    <p>
+        <a href="politica_privacidad.php">Política de Privacidad</a> |
+        <a href="aviso_legal.php">Aviso Legal</a>
+    </p>
+</footer>
+
+<!-- 🔹 SCRIPT PARA EL SLIDER -->
 <script>
-    // Lógica para mostrar/ocultar películas
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    function mostrarSlide(n) {
+        slides.forEach(slide => slide.style.display = "none");
+        slideIndex = (n + slides.length) % slides.length;
+        slides[slideIndex].style.display = "block";
+    }
+
+    function moverSlide(n) {
+        mostrarSlide(slideIndex + n);
+    }
+
+    // 🔹 Mostrar la primera imagen y cambiar cada 5s automáticamente
+    mostrarSlide(slideIndex);
+    setInterval(() => moverSlide(1), 5000);
+
+    // 🔹 Mostrar/Ocultar películas
     document.addEventListener('DOMContentLoaded', () => {
         const peliculas = document.querySelectorAll('.cartelera .pelicula');
         const button = document.getElementById('toggleButton');
         let mostrarMas = true;
 
-        // Mostrar solo las primeras 5 películas al inicio
         peliculas.forEach((pelicula, index) => {
             if (index >= 10) pelicula.style.display = 'none';
         });
 
-        // Alternar mostrar más/menos
         button.addEventListener('click', () => {
             if (mostrarMas) {
                 peliculas.forEach(pelicula => pelicula.style.display = 'block');
@@ -77,5 +221,6 @@ $resultado = $conexion->query($sql);
         });
     });
 </script>
+
 </body>
 </html>

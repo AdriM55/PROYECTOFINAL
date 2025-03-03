@@ -131,3 +131,20 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+    /* 🔹 PIE DE PÁGINA */
+    .piepagina {
+        background-color: #333;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .piepagina a {
+        color: #ffcc00;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    .piepagina a:hover {
+        color: #ff9900;
+    }

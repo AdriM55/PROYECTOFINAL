@@ -1,6 +1,7 @@
 <?php
 // Iniciar la sesión, para poder acceder a la información del usuario que ha iniciado sesión
 session_start();
+session_regenerate_id(true);  // Regenerar el ID de la sesión para mayor seguridad
 
 // Incluir el archivo de conexión a la base de datos
 include 'db.php';
@@ -41,17 +42,16 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
     <!-- Barra de navegación -->
     <header>
         <div class="nav">
-            <a href="index.php">Inicio</a> <!-- Enlace a la página principal -->
+            <a href="index.php">Inicio</a>
             <div class="acciones-usuario">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <!-- Si el usuario está logueado, mostrar su nombre y opciones -->
                     <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
                     <a href="mis_reservas.php">Mis Reservas</a>
+                    <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a>
                     <a href="logout.php" class="boton">Cerrar Sesión</a>
                 <?php else: ?>
-                    <!-- Si el usuario no está logueado, mostrar enlaces para iniciar sesión o registrarse -->
-                    <a href="login.php" class="boton">Iniciar Sesión</a>
-                    <a href="registro.php" class="boton">Registrarse</a>
+                    <a href="login.php" class="button">Iniciar Sesión</a>
+                    <a href="registro.php" class="button">Registrarse</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -62,7 +62,7 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
 
     <?php if ($resultado_reservas->num_rows > 0): ?>
         <!-- Si el usuario tiene reservas, mostrar las reservas en una tabla -->
-        <table>
+        <table class="tabla-reservas">
             <thead>
                 <tr>
                     <th>Película</th>
@@ -73,16 +73,15 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
             </thead>
             <tbody>
                 <?php while ($reserva = $resultado_reservas->fetch_assoc()): ?>
-                    <!-- Recorrer todas las reservas y mostrar los detalles -->
                     <tr>
-                        <td><?php echo htmlspecialchars($reserva['titulo']); ?></td>  <!-- Título de la película -->
-                        <td><?php echo date("H:i", strtotime($reserva['horario'])); ?></td>  <!-- Mostrar horario formateado -->
-                        <td><?php echo htmlspecialchars($reserva['asiento']); ?></td>  <!-- Mostrar asiento reservado -->
+                        <td><?php echo htmlspecialchars($reserva['titulo']); ?></td>
+                        <td><?php echo date("H:i", strtotime($reserva['horario'])); ?></td>
+                        <td><?php echo htmlspecialchars($reserva['asiento']); ?></td>
                         <td>
                             <!-- Formulario para cancelar la reserva -->
                             <form action="cancelar_reserva.php" method="POST">
-                                <input type="hidden" name="reserva_id" value="<?php echo $reserva['reserva_id']; ?>">  <!-- ID de la reserva -->
-                                <button type="submit" class="boton-cancelar">Cancelar</button>  <!-- Botón para cancelar -->
+                                <input type="hidden" name="reserva_id" value="<?php echo $reserva['reserva_id']; ?>">
+                                <button type="submit" class="boton-cancelar">Cancelar</button>
                             </form>
                         </td>
                     </tr>
@@ -90,8 +89,69 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
             </tbody>
         </table>
     <?php else: ?>
-        <!-- Si el usuario no tiene reservas, mostrar un mensaje -->
         <p>No tienes reservas.</p>
     <?php endif; ?>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="piepagina">
+        <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
+        <p>
+            <a href="politica_privacidad.php">Política de Privacidad</a> |
+            <a href="aviso_legal.php">Aviso Legal</a>
+        </p>
+    </footer>
+
+    <style>
+        .piepagina {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .tabla-reservas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tabla-reservas th, .tabla-reservas td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .tabla-reservas th {
+            background-color:rgb(255, 0, 0);
+        }
+
+        .boton-cancelar {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .boton-cancelar:hover {
+            background-color: #d32f2f;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: block;
+                text-align: center;
+            }
+
+            .tabla-reservas th, .tabla-reservas td {
+                font-size: 14px;
+            }
+        }
+    </style>
+
 </body>
 </html>
