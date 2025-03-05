@@ -12,7 +12,7 @@ $resultado = $conexion->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartelera de Cine</title>
+    <title>Cine Kursaal</title>
     <link rel="stylesheet" href="estilo.css">
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
@@ -44,7 +44,8 @@ $resultado = $conexion->query($sql);
             'slider/image2.png',
             'slider/image3.png',
             'slider/image4.png',
-            'slider/image5.png'
+            'slider/image5.png',
+            'slider/image6.png'
         ];
         
         foreach ($imagenes_slider as $imagen): ?>
@@ -58,7 +59,7 @@ $resultado = $conexion->query($sql);
 </div>
 
 <main>
-    <h1>Cine Kursaal</h1>
+    <h1 class="titulocartelera">Cartelera</h1>
 
     <div class="cartelera" id="cartelera">
         <?php 
@@ -73,36 +74,14 @@ $resultado = $conexion->query($sql);
         </div>
         <?php endwhile; ?>
     </div>
-    <button id="toggleButton" class="boton-mostrar">Mostrar más</button>
+    <button id="toggleButton" class="boton-mostrar">más</button>
 </main>
 
-<!-- 🔹 ESTILOS MEJORADOS -->
+<!-- 🔹 ESTILOS SLIDER -->
 <style>
-    /* 🎬 General */
     body {
-        font-family: 'Jost', Sans-serif;
-        background-color: #222;
-        color: #fff;
-        margin: 0;
-        padding: 0;
         text-align: center;
     }
-
-    h1 {
-        color: #ffcc00;
-        font-size: 3em;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-    }
-
-    /* 🔹 NAVBAR */
-    .nav {
-        display: flex;
-        justify-content: space-between;
-        background-color: #333;
-        padding: 15px 30px;
-        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
-    }
-
     /* 🔹 SLIDER (Pegado a la barra de navegación) */
     .slider-container {
         width: 100%;
@@ -148,25 +127,6 @@ $resultado = $conexion->query($sql);
         background-color: rgba(0, 0, 0, 0.8);
     }
 
-    /* 🔹 BOTÓN MOSTRAR MÁS */
-    .boton-mostrar {
-        margin: 20px auto;
-        padding: 10px 20px;
-        background-color: #ffcc00;
-        color: #222;
-        font-size: 1em;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .boton-mostrar:hover {
-        background-color: #ff9900;
-        transform: scale(1.05);
-    }
-
-
 </style>
 
 <!-- 🔹 PIE DE PÁGINA -->
@@ -210,12 +170,12 @@ $resultado = $conexion->query($sql);
         button.addEventListener('click', () => {
             if (mostrarMas) {
                 peliculas.forEach(pelicula => pelicula.style.display = 'block');
-                button.textContent = 'Mostrar menos';
+                button.textContent = 'menos';
             } else {
                 peliculas.forEach((pelicula, index) => {
                     pelicula.style.display = index < 10 ? 'block' : 'none';
                 });
-                button.textContent = 'Mostrar más';
+                button.textContent = 'más';
             }
             mostrarMas = !mostrarMas;
         });

@@ -143,6 +143,10 @@ if (!empty($carrito)) {
 </footer>
 
 <style>
+    body {
+    text-align: center;
+        } 
+        
     .piepagina {
         background-color: #333;
         color: #fff;
@@ -158,6 +162,7 @@ if (!empty($carrito)) {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
+        background-color: #202020;
     }
 
     .tabla-carrito th, .tabla-carrito td {

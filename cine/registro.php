@@ -58,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </footer>
 
 <style>
+    body {
+    text-align: center;
+        } 
+        
     .piepagina {
     background-color: #333;
     color: #fff;

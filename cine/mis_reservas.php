@@ -102,6 +102,9 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
     </footer>
 
     <style>
+        body {
+        text-align: center;
+        }
         .piepagina {
             background-color: #333;
             color: #fff;
@@ -123,6 +126,7 @@ $resultado_reservas = $stmt_reservas->get_result();  // Obtener el resultado de 
             padding: 10px;
             border: 1px solid #ccc;
             text-align: center;
+            background-color: #202020;
         }
 
         .tabla-reservas th {

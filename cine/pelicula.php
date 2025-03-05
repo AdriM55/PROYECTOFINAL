@@ -77,25 +77,57 @@ if (!empty($horario_id)) {
     </script>
 
     <style>
-        .asiento {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            margin: 5px;
-            background-image: url('asientos/disponible.png');
-            background-size: cover;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
+    .titulo-pelicula{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .contenedor-pelicula {
+        display: flex;
+        margin: 20px auto;
+        max-width: 800px;
+        text-align: center;
+        background-color: #202020;
+        border-radius: 12px;
+        box-shadow: 0px 4px 20px #202020;
+        color: white;
+        padding: 20px;
+    }
 
-        .asiento.ocupado {
-            background-image: url('asientos/ocupado.png');
-            cursor: not-allowed;
-        }
+    .portada img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-        .asiento.seleccionado {
-            background-image: url('asientos/seleccionado.png');
-        }
+    .detalles-pelicula {
+        font-size: 18px;
+    }
+
+    .sinopsis {
+        text-align: center;
+    }
+
+    .asiento {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        margin: 5px;
+        background-image: url('asientos/disponible.png');
+        background-size: cover;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .asiento.ocupado {
+        background-image: url('asientos/ocupado.png');
+        cursor: not-allowed;
+    }
+
+    .asiento.seleccionado {
+        background-image: url('asientos/seleccionado.png');
+        transform: scale(1.1); /* Pequeño zoom cuando se selecciona */
+    }
 
     </style>
 </head>
@@ -117,14 +149,24 @@ if (!empty($horario_id)) {
         </div>
     </div>
 </header>
+<h1 class="titulo-pelicula"><?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
+    <div class="contenedor-pelicula">
 
-    <h1><?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
-
-    <div class="sinopsis">
+    <div class="portada">
+        <img src="<?php echo htmlspecialchars($pelicula['portada']); ?>" alt="Portada de <?php echo htmlspecialchars($pelicula['titulo']); ?>">
+    </div>
+    <div class="detalles-pelicula">
+        <p><strong>Duración:</strong> <?php echo htmlspecialchars($pelicula['duracion']); ?> min</p>
+        <p><strong>Categoría:</strong> <?php echo htmlspecialchars($pelicula['categoria']); ?></p>
+        <p><strong>Director:</strong> <?php echo htmlspecialchars($pelicula['director']); ?></p>
+        <div class="sinopsis">
         <h2>Sinopsis:</h2>
         <p><?php echo nl2br(htmlspecialchars($pelicula['sinopsis'])); ?></p>
     </div>
+    </div>
+</div>
 
+<div style="text-align: center;">
     <form action="carrito.php" method="POST" onsubmit="return validarFormulario()">
         <input type="hidden" name="pelicula_id" value="<?php echo $pelicula_id; ?>">
         
@@ -139,11 +181,11 @@ if (!empty($horario_id)) {
             <?php endwhile; ?>
         </select>
 
-        <h3>Selecciona tus asientos:</h3>
+        <h2 style="background-color: #202020;">ELIGE TU ASIENTO:</h2>
         <input type="hidden" name="asientos" id="asientosSeleccionados">
 
         <div class="asientos-container">
-            <div class="pantalla">Pantalla</div>
+            <div class="pantalla">PANTALLA</div>
             <?php for ($i = 0; $i < 5; $i++): ?>
                 <?php for ($j = 0; $j < 5; $j++): ?>
                     <?php 
@@ -158,7 +200,7 @@ if (!empty($horario_id)) {
             <?php endfor; ?>
         </div>
 
-        <button type="submit">Agregar al carrito</button>
+        <button class="botonagregar" type="submit">Comprar entradas</button>
     </form>
 
     <h2>Tráiler:</h2>
@@ -168,6 +210,7 @@ if (!empty($horario_id)) {
         // Imprimir asientos ocupados en consola para depuración
         console.log(<?php echo json_encode($ocupados); ?>);
     </script>
+</div>
     <!-- 🔹 PIE DE PÁGINA -->
 <footer class="piepagina">
     <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
