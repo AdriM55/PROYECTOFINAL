@@ -7,36 +7,36 @@ include 'db.php';
 
 // Verificar que el usuario esté logueado (existe una variable de sesión 'usuario_id')
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location: login.php");  // Si no está logueado, redirige a la página de login
     exit; 
 }
 
 // Obtener el ID de la película desde la URL
-$pelicula_id = $_GET['id'] ?? 0;
+$pelicula_id = $_GET['id'] ?? 0;  // Si no existe el parámetro 'id', se asigna 0
 
 // Consultar la información de la película
-$stmt_pelicula = $conexion->prepare("SELECT * FROM peliculas WHERE id = ?");
-$stmt_pelicula->bind_param("i", $pelicula_id);
-$stmt_pelicula->execute();
-$pelicula = $stmt_pelicula->get_result()->fetch_assoc();
+$stmt_pelicula = $conexion->prepare("SELECT * FROM peliculas WHERE id = ?");  // Prepara la consulta
+$stmt_pelicula->bind_param("i", $pelicula_id);  // Vincula el parámetro para la consulta
+$stmt_pelicula->execute();  // Ejecuta la consulta
+$pelicula = $stmt_pelicula->get_result()->fetch_assoc();  // Obtiene los resultados de la consulta
 
 // Consultar los horarios disponibles para la película
 $stmt_horarios = $conexion->prepare("SELECT * FROM horarios WHERE pelicula_id = ?");
-$stmt_horarios->bind_param("i", $pelicula_id);
-$stmt_horarios->execute();
-$horarios = $stmt_horarios->get_result();
+$stmt_horarios->bind_param("i", $pelicula_id);  // Vincula el parámetro de la película
+$stmt_horarios->execute();  // Ejecuta la consulta
+$horarios = $stmt_horarios->get_result();  // Obtiene los horarios disponibles
 
 // Obtener los asientos ocupados para un horario específico
 $ocupados = [];
-$horario_id = $_GET['horario_id'] ?? '';
+$horario_id = $_GET['horario_id'] ?? '';  // Obtiene el horario seleccionado desde la URL
 
 if (!empty($horario_id)) {
     $stmt_ocupados = $conexion->prepare("SELECT asiento FROM reservas WHERE horario_id = ?");
-    $stmt_ocupados->bind_param("i", $horario_id);
-    $stmt_ocupados->execute();
-    $ocupadosResult = $stmt_ocupados->get_result();
+    $stmt_ocupados->bind_param("i", $horario_id);  // Vincula el parámetro para obtener los asientos ocupados
+    $stmt_ocupados->execute();  // Ejecuta la consulta
+    $ocupadosResult = $stmt_ocupados->get_result();  // Obtiene los resultados de los asientos ocupados
     while ($row = $ocupadosResult->fetch_assoc()) {
-        $ocupados[] = $row['asiento'];
+        $ocupados[] = $row['asiento'];  // Almacena los asientos ocupados en un array
     }
 }
 ?>
@@ -50,29 +50,31 @@ if (!empty($horario_id)) {
     <link rel="stylesheet" href="estilo.css">
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 
+    <!-- Script para manejar la selección de asientos -->
     <script>
         function seleccionarAsiento(asiento) {
-            if (asiento.classList.contains('ocupado')) return;
-            asiento.classList.toggle('seleccionado');
+            if (asiento.classList.contains('ocupado')) return;  // Si el asiento está ocupado, no hace nada
+            asiento.classList.toggle('seleccionado');  // Cambia el estado de selección del asiento
             const seleccionados = Array.from(document.querySelectorAll('.asiento.seleccionado'))
-                .map(a => a.dataset.asiento);
-            document.getElementById('asientosSeleccionados').value = seleccionados.join(',');
+                .map(a => a.dataset.asiento);  // Obtiene los asientos seleccionados
+            document.getElementById('asientosSeleccionados').value = seleccionados.join(',');  // Guarda los asientos seleccionados en un campo oculto
         }
 
+        // Cambiar el horario seleccionado
         function cambiarHorario() {
-            const horarioId = document.getElementById('horario').value;
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('horario_id', horarioId);
-            window.location.search = urlParams.toString();
+            const horarioId = document.getElementById('horario').value;  // Obtiene el valor del horario
+            const urlParams = new URLSearchParams(window.location.search);  // Obtiene los parámetros de la URL
+            urlParams.set('horario_id', horarioId);  // Establece el nuevo parámetro de horario
+            window.location.search = urlParams.toString();  // Recarga la página con el nuevo horario
         }
 
+        // Validar el formulario antes de enviarlo
         function validarFormulario() {
-            const asientosSeleccionados = document.getElementById('asientosSeleccionados').value;
-            if (asientosSeleccionados === '') {
+            if (!document.getElementById('asientosSeleccionados').value.trim()) {  // Si no hay asientos seleccionados
                 alert('Debes seleccionar al menos un asiento.');
-                return false;
+                return false;  // No se envía el formulario
             }
-            return true;
+            return true;  // El formulario se envía
         }
     </script>
 
@@ -135,23 +137,24 @@ if (!empty($horario_id)) {
 <body>
 <header>
     <div class="nav">
+        <!-- Enlaces de navegación -->
         <a href="index.php">Inicio</a>
         <div class="acciones-usuario">
-            <?php if (isset($_SESSION['usuario_id'])): ?>
-                <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
-                <a href="mis_reservas.php">Mis Reservas</a>
-                <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a>
-                <a href="logout.php" class="boton">Cerrar Sesión</a>
-            <?php else: ?>
-                <a href="login.php" class="button">Iniciar Sesión</a>
-                <a href="registro.php" class="button">Registrarse</a>
+            <?php if (isset($_SESSION['usuario_id'])): ?> <!-- Verifica si el usuario ha iniciado sesión -->
+                <a href="perfil.php" style="color: white;"><?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?></a> <!-- Muestra el nombre del usuario -->
+                <a href="mis_reservas.php">Mis Reservas</a> <!-- Enlace a las reservas del usuario -->
+                <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a> <!-- Muestra el número de artículos en el carrito -->
+                <a href="logout.php" class="boton">Cerrar Sesión</a> <!-- Enlace para cerrar sesión -->
+            <?php else: ?> <!-- Si el usuario no ha iniciado sesión -->
+                <a href="login.php" class="button">Iniciar Sesión</a> <!-- Enlace para iniciar sesión -->
+                <a href="registro.php" class="button">Registrarse</a> <!-- Enlace para registrarse -->
             <?php endif; ?>
         </div>
     </div>
 </header>
-<h1 class="titulo-pelicula"><?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
-    <div class="contenedor-pelicula">
 
+<h1 class="titulo-pelicula"><?php echo htmlspecialchars($pelicula['titulo']); ?></h1>
+<div class="contenedor-pelicula">
     <div class="portada">
         <img src="<?php echo htmlspecialchars($pelicula['portada']); ?>" alt="Portada de <?php echo htmlspecialchars($pelicula['titulo']); ?>">
     </div>
@@ -211,7 +214,8 @@ if (!empty($horario_id)) {
         console.log(<?php echo json_encode($ocupados); ?>);
     </script>
 </div>
-    <!-- 🔹 PIE DE PÁGINA -->
+
+<!-- 🔹 PIE DE PÁGINA -->
 <footer class="piepagina">
     <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
     <p>

@@ -1,7 +1,6 @@
 /* Importar la fuente Jost desde Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
 
-
 /* Estilos generales */
 body {
     font-family: 'Jost', Sans-serif;
@@ -11,37 +10,11 @@ body {
     padding: 0;
 }
 
-.titulocartelera {
-    color: white;
-    width: 100%;
-    border-bottom: 1px solid white;
-    font-size: 2.5rem;
-}
-
-/* Estilos para el botón de mostrar más/menos */
-.boton-mostrar {
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: transparent; /* Fondo transparente */
-    color: #ccc; /* Color del texto */
-    font-size: 1em;
-    border: 2px solid #ccc; /* Borde blanco */
-    border-radius: 40px;
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-.boton-mostrar:hover {
-    transform: scale(1.05);
-    border-color: #ffcc00; /* Cambia el color del borde al pasar el ratón */
-    color: #ffcc00; /* Cambia el color del texto al pasar el ratón */
-}
-
 /* Barra de navegación */
 .nav {
     display: flex;
     justify-content: space-between;
-    background-color: #202020;;
+    background-color: #202020;
     padding: 15px 30px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
@@ -75,6 +48,14 @@ body {
     transform: scale(1.05);
 }
 
+/* Título cartelera */
+.titulocartelera {
+    color: white;
+    width: 100%;
+    border-bottom: 1px solid white;
+    font-size: 2.5rem;
+}
+
 /* Cartelera de películas */
 .cartelera {
     display: flex;
@@ -104,8 +85,28 @@ body {
     width: 100%;
 }
 
+/* Botón "Mostrar más/menos" */
+.boton-mostrar {
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #ccc;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.boton-mostrar:hover {
+    transform: scale(1.05);
+    border-color: #ffcc00;
+    color: #ffcc00;
+}
+
+/* Botón Agregar */
 .botonagregar {
-    background-color: #ff4500; /* Naranja intenso */
+    background-color: #ff4500;
     color: white;
     font-size: 18px;
     font-weight: bold;
@@ -120,7 +121,7 @@ body {
 }
 
 .botonagregar:hover {
-    background-color: #e63900; /* Un tono más oscuro al pasar el mouse */
+    background-color: #e63900;
     transform: scale(1.05);
 }
 
@@ -129,24 +130,7 @@ body {
     transform: scale(0.98);
 }
 
-/* Ajuste responsivo */
-@media (max-width: 768px) {
-    .nav {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .cartelera {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .pelicula {
-        width: 90%;
-    }
-}
-
-/* Estilos para la selección de horario */
+/* Selección de horario */
 label[for="horario"] {
     font-size: 20px;
     font-weight: bold;
@@ -178,9 +162,7 @@ select#horario:focus {
     box-shadow: 0px 0px 12px rgba(255, 153, 0, 0.8);
 }
 
-
 /* Estilo para la pantalla */
-
 .pantalla {
     width: 25%;
     margin: auto;
@@ -194,20 +176,37 @@ select#horario:focus {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-    /* 🔹 PIE DE PÁGINA */
-    .piepagina {
-        background-color: #202020;;
-        color: #fff;
-        padding: 20px 0;
-        text-align: center;
+/* Pie de página */
+.piepagina {
+    background-color: #202020;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.piepagina a {
+    color: #ffcc00;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.piepagina a:hover {
+    color: #ff9900;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .piepagina a {
-        color: #ffcc00;
-        text-decoration: none;
-        margin: 0 10px;
+    .cartelera {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .piepagina a:hover {
-        color: #ff9900;
+    .pelicula {
+        width: 90%;
     }
+}

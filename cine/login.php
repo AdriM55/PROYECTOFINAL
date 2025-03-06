@@ -42,14 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
                 <a href="mis_reservas.php">Mis Reservas</a>
+                <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a>
                 <a href="logout.php" class="boton">Cerrar Sesión</a>
             <?php else: ?>
-                <a href="login.php" class="boton">Iniciar Sesión</a>
-                <a href="registro.php" class="boton">Registrarse</a>
+                <a href="login.php" class="button">Iniciar Sesión</a>
+                <a href="registro.php" class="button">Registrarse</a>
             <?php endif; ?>
         </div>
     </div>
 </header>
+<div class="form-container">
 <h2>Iniciar Sesión</h2>
 <?php if (isset($error)): ?>
     <p style="color: red;"><?php echo $error; ?></p>
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <input type="password" name="password" placeholder="Contraseña" required>
     <button type="submit">Iniciar Sesión</button>
 </form>
-
+</div>
     <!-- 🔹 PIE DE PÁGINA -->
     <footer class="piepagina">
     <p>&copy; <?php echo date("Y"); ?> Cine Kursaal. Todos los derechos reservados.</p>
@@ -73,7 +75,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     body {
     text-align: center;
         }    
-        
+    
+        .form-container {
+        background-color: #222;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        width: 350px;
+        margin: 50px auto;
+        text-align: center;
+    }
+    input, button {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ffcc00;
+        border-radius: 5px;
+        background-color: #303030;
+        color: white;
+        font-size: 16px;
+    }
+    input::placeholder {
+        color: #bbb;
+    }
+    button {
+        background-color: #ff4500;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+        background-color: #e63900;
+        transform: scale(1.05);
+    }
+
     .piepagina {
     background-color: #333;
     color: #fff;

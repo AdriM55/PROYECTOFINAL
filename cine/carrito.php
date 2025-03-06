@@ -80,20 +80,22 @@ if (!empty($carrito)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras</title>
     <link rel="stylesheet" href="estilo.css">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
 <header>
     <div class="nav">
+        <!-- Enlaces de navegación -->
         <a href="index.php">Inicio</a>
         <div class="acciones-usuario">
-            <?php if (isset($_SESSION['usuario_id'])): ?>
-                <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?>!</span>
-                <a href="mis_reservas.php">Mis Reservas</a>
-                <a href="carrito.php">Carrito (<?php echo count($_SESSION['carrito']); ?>)</a>
-                <a href="logout.php" class="boton">Cerrar Sesión</a>
-            <?php else: ?>
-                <a href="login.php" class="button">Iniciar Sesión</a>
-                <a href="registro.php" class="button">Registrarse</a>
+            <?php if (isset($_SESSION['usuario_id'])): ?> <!-- Verifica si el usuario ha iniciado sesión -->
+                <a href="perfil.php" style="color: white;"><?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?></a> <!-- Muestra el nombre del usuario -->
+                <a href="mis_reservas.php">Mis Reservas</a> <!-- Enlace a las reservas del usuario -->
+                <a href="carrito.php">Carrito (<?php echo isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0; ?>)</a> <!-- Muestra el número de artículos en el carrito -->
+                <a href="logout.php" class="boton">Cerrar Sesión</a> <!-- Enlace para cerrar sesión -->
+            <?php else: ?> <!-- Si el usuario no ha iniciado sesión -->
+                <a href="login.php" class="button">Iniciar Sesión</a> <!-- Enlace para iniciar sesión -->
+                <a href="registro.php" class="button">Registrarse</a> <!-- Enlace para registrarse -->
             <?php endif; ?>
         </div>
     </div>
